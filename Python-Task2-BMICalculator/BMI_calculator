@@ -1,0 +1,92 @@
+"""
+BMI Calculator
+Oasis Infobyte - Python Programming Internship
+
+Calculates Body Mass Index (BMI) from user-entered height and weight,
+classifies the result, and keeps a session history of calculations.
+"""
+
+
+def calculate_bmi(weight_kg, height_m):
+    """
+    Calculate BMI given weight in kilograms and height in meters.
+
+    Formula: BMI = weight (kg) / height (m)^2
+
+    Returns:
+        float: BMI rounded to 2 decimal places.
+    """
+    if height_m <= 0:
+        raise ValueError("Height must be greater than zero.")
+    if weight_kg <= 0:
+        raise ValueError("Weight must be greater than zero.")
+
+    bmi = weight_kg / (height_m ** 2)
+    return round(bmi, 2)
+
+
+def classify_bmi(bmi):
+    """Return the WHO weight category for a given BMI value."""
+    if bmi < 18.5:
+        return "Underweight"
+    elif 18.5 <= bmi < 25:
+        return "Normal weight"
+    elif 25 <= bmi < 30:
+        return "Overweight"
+    else:
+        return "Obese"
+
+
+def get_positive_float(prompt):
+    """Helper to safely get a positive float from the user."""
+    while True:
+        try:
+            value = float(input(prompt))
+            if value <= 0:
+                print("Please enter a positive number.")
+                continue
+            return value
+        except ValueError:
+            print("Please enter a valid number.")
+
+
+def main():
+    print("=" * 45)
+    print("           BMI CALCULATOR")
+    print("=" * 45)
+
+    history = []
+
+    while True:
+        weight = get_positive_float("\nEnter your weight (kg): ")
+        height = get_positive_float("Enter your height (m): ")
+
+        try:
+            bmi = calculate_bmi(weight, height)
+            category = classify_bmi(bmi)
+            history.append({"weight": weight, "height": height, "bmi": bmi,
+                             "category": category})
+
+            print(f"\nYour BMI is: {bmi}")
+            print(f"Category: {category}")
+        except ValueError as e:
+            print(f"Error: {e}")
+
+        again = input("\nCalculate another BMI? (y/n): ").strip().lower()
+        if again != "y":
+            break
+
+    if history:
+        print("\n" + "=" * 45)
+        print("           SESSION HISTORY")
+        print("=" * 45)
+        for i, record in enumerate(history, start=1):
+            print(f"{i}. Weight: {record['weight']} kg, "
+                  f"Height: {record['height']} m, "
+                  f"BMI: {record['bmi']} ({record['category']})")
+
+    print("\nThank you for using the BMI Calculator!")
+
+
+if __name__ == "__main__":
+    main()
